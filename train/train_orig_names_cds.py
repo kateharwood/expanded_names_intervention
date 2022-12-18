@@ -3,19 +3,32 @@ import jsonlines
 import re
 import string
 import random
+import argparse
 
-with open('data/target_pairs.txt', 'r') as f:
-    lines = f.read().splitlines()
+parser = argparse.ArgumentParser()
+parser.add_argument('--dest', type=str, required=True)
+parser.add_argument('--less_target', type=bool, default=False)
+parser.add_argument('--bipartite_matching', type=str, required=True)
+args = parser.parse_args()
+
+if args.less_target:
+     with open('data/target_pairs_less.txt', 'r') as f:
+        lines = f.read().splitlines()
+else: 
+    with open('data/target_pairs.txt', 'r') as f:
+        lines = f.read().splitlines()
 lines = [line.strip() for line in lines]
 target_pairs = [line.split(" - ") for line in lines]
 
-with open('data/bipartite_name_matches.txt', 'r') as f:
+with open(args.bipartite_matching, 'r') as f:
     lines = f.read().splitlines()
 lines = [line.strip() for line in lines]
 name_pairs = [line.split(" ") for line in lines]
 
 articles = []
-corpus = ['data/parsed_wiki_articles_tokenized_partial2.jsonl', 
+corpus = ['data/parsed_wiki_articles_tokenized_partial6.jsonl',
+    'data/parsed_wiki_articles_tokenized_partial7.jsonl',
+    'data/parsed_wiki_articles_tokenized_partial2.jsonl', 
     'data/parsed_wiki_articles_tokenized_partial3.jsonl',
     'data/parsed_wiki_articles_tokenized_partial4.jsonl', 
     'data/parsed_wiki_articles_tokenized_partial5.jsonl']
@@ -45,4 +58,4 @@ print('Done replacing articles.')
 # CBOW model, 300 length vector, epochs at default 5 all as in the original paper
 # leaving window as default 5 bc it is not mentioned in paper
 model = Word2Vec(articles, vector_size = 300, min_count = 10) 
-model.save('models/orig_names_cds.kv')
+model.save(args.dest)

@@ -3,11 +3,11 @@ import scipy
 import cupy as np
 
 
-cost_matrix = np.load('data/euclidean_cost_matrix.npy')
+cost_matrix = np.load('data/euclidean_cost_matrix_2000.npy')
 assignment_matrix = scipy.optimize.linear_sum_assignment(cost_matrix.get())
-np.save('data/bipartite_assignment_matrix.npy', assignment_matrix)
+np.save('data/bipartite_assignment_matrix_2000.npy', assignment_matrix)
 
-assignment_matrix = np.load('data/bipartite_assignment_matrix.npy')
+assignment_matrix = np.load('data/bipartite_assignment_matrix_2000.npy')
 
 with open('data/female_names.txt', 'r') as f:
     female_names = f.readlines()
@@ -26,7 +26,7 @@ for i, name in enumerate(female_names):
         print(name)
     assert(name_match != name)
 
-with open('data/bipartite_name_matches.txt', 'w') as f:
+with open('data/bipartite_name_matches_2000.txt', 'w') as f:
     f.write('\n'.join(matches))
 
 

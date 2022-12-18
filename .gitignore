@@ -1,0 +1,15 @@
+/krh2154.code-workspace
+/stanford-corenlp-full-2018-02-27.zip
+/stanford-corenlp-latest.zip
+/wrong_other
+/tokenizers
+/data/parsed_wiki_articles_tokenized_partial3.jsonl
+/data/parsed_wiki_articles_tokenized_partial4.jsonl
+/data/parsed_wiki_articles_tokenized_partial5.jsonl
+/data/parsed_wiki_articles_tokenized_partial6.jsonl
+/data/parsed_wiki_articles_tokenized_partial7.jsonl
+/fair
+/models
+/models_final
+help.jsonl
+*.npy

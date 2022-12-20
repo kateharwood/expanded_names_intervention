@@ -5,6 +5,8 @@ import string
 import random
 import numpy as np
 import argparse
+from scipy.special import softmax
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--num_female_names', type=int, required=True)
@@ -33,6 +35,7 @@ with open('data/male_names.txt', 'r') as f:
 male_names = lines[:args.num_male_names]
 
 name_matching_probabilities = np.load(args.name_matching_probabilities)
+print(name_matching_probabilities.shape)
 
 articles = []
 corpus = ['data/parsed_wiki_articles_tokenized_partial7.jsonl',
@@ -60,17 +63,20 @@ for filename in corpus:
                     name_index = female_names.index(token)
                     index_of_female_name = name_index*len(male_names)
                     matching_probabilities = name_matching_probabilities[index_of_female_name : index_of_female_name + len(male_names)]
+                    assert(len(matching_probabilities) == len(male_names))
+                    assert(math.isclose(np.sum(matching_probabilities), len(male_names)/len(female_names)))
+                    if np.sum(matching_probabilities) != 1: # when there are more male names than female names
+                        matching_probabilities = softmax(matching_probabilities)
                     idx = np.random.choice(list(range(len(matching_probabilities))), p=matching_probabilities)
                     name_swap = male_names[idx % len(male_names)]
                     article[article.index(token)] = name_swap
 
                 if token in male_names:
                     name_index = male_names.index(token)
-                    start_of_male_names = len(female_names)*len(male_names)
-                    index_of_male_name = name_index*len(female_names)
-                    matching_probabilities = name_matching_probabilities[start_of_male_names + index_of_male_name: (start_of_male_names + index_of_male_name) + len(female_names)]
+                    matching_probabilities = name_matching_probabilities[name_index:len(name_matching_probabilities):len(male_names)]
+                    assert(len(matching_probabilities) == len(female_names))
                     idx = np.random.choice(list(range(len(matching_probabilities))), p=matching_probabilities)
-                    name_swap = female_names[(idx-start_of_male_names) % len(female_names)]
+                    name_swap = female_names[idx%len(male_names)]
                     article[article.index(token)] = name_swap
         articles.append(article)
 print('Done replacing articles.')
